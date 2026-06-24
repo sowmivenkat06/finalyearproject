@@ -330,9 +330,9 @@ Future improvements include:
 
 # 👥 Project Team
 
-Varnika S
-Sowmiya M V
-Sudeep K
+- Varnika S
+- Sowmiya M
+- V Sudeep K
 
 ---
 
