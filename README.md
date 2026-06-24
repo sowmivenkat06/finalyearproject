@@ -1,4 +1,4 @@
-# Cervical Cancer Classification Using Deep Learning
+# An Explainable Attention-Base Deep Learning Framework for Cervical Cancer Classification Using Pap Smear Images
 
 ## 📌 Project Overview
 
@@ -307,16 +307,9 @@ Cervical-Cancer-Classification/
 
 │
 ├── Base_Papers/
-│
-├── Dataset/
-│
-├── Models/
-│
-├── Notebooks/
-│
-├── Results/
-│
-├── Documentation/
+│ ├── Base Paper 1
+│ ├── Base Paper 2
+│ └── Base Paper 3
 │
 └── README.md
 ```
