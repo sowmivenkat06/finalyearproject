@@ -64,7 +64,7 @@ The proposed system integrates multiple AI techniques into a single intelligent 
 
 ### Pap Smear Image Acquisition
 
-         ↓
+          ↓
 
 ### Image Preprocessing
 
@@ -76,19 +76,19 @@ The proposed system integrates multiple AI techniques into a single intelligent 
          ↓
 
 ### Feature Extraction using Explainable Attention-Based Deep Learning Model
-
-         ↓
+  
+           ↓
 
 ### Cervical Cell Classification
 
 * Normal
 * Abnormal
 
-         ↓
+           ↓
 
 ### Explainability using Attention Maps (Grad-CAM)
 
-        ↓
+          ↓
 
 ### Automated Diagnostic Dashboard
 
