@@ -218,6 +218,9 @@ Datasets:
 
 - SIPaKMeD Dataset
 - Herlev Dataset
+  
+![Dataset](trainingdataset.png)
+
 
 ## Testing Dataset
 
