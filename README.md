@@ -218,6 +218,8 @@ Datasets:
 
 - SIPaKMeD Dataset
 - Herlev Dataset
+
+  This is a SIPaKMeD dataset that we used to train our model
   
 ![Dataset](trainingdataset.png)
 
