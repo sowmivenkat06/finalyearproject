@@ -1,0 +1,65 @@
+{% set active_nav = "about" %}
+{% set page_title = "About CerviScan AI" %}
+{% set page_subtitle = "Background, dataset credits, and a summary of the multi-model fusion architecture." %}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="about-hero-card animate-fade">
+  <div class="about-image-collage">
+    <img src="/static/img/microscope.png" alt="Cervical cell micrograph collage">
+  </div>
+  <div class="about-content-right">
+    <h3>AI-Powered Cervical Cancer Detection from Pap Smear Images</h3>
+    <p>CerviScan AI is an assistive diagnostic platform that combines <strong>seven state-of-the-art Convolutional Neural Networks</strong> through feature-level attention fusion to classify cells in Pap smear cytology slides. By leveraging an ensemble of diverse architectures, the system achieves robust generalization across multiple publicly available cervical cytology datasets, enabling pathologists to focus on ambiguous cases and reducing missed detections.</p>
+    <p>The <strong>Feature Fusion Classifier</strong> concatenates deep features extracted from ResNet50, ResNet101, ResNet152, AlexNet, VGG16, GoogLeNet, and InceptionV3 into a single 17,408-dimensional descriptor, which is then weighted by a learned attention layer and passed through a 4-layer MLP to produce a final 5-class prediction.</p>
+  </div>
+</div>
+
+<div class="about-badges-row">
+  <div class="about-badge-item">
+    <span class="about-badge-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+      </svg>
+    </span>
+    <span>7 CNN Ensembles</span>
+  </div>
+  <div class="about-badge-item">
+    <span class="about-badge-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+      </svg>
+    </span>
+    <span>99.21% Feature Fusion Accuracy</span>
+  </div>
+  <div class="about-badge-item">
+    <span class="about-badge-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+    </span>
+    <span>99.61% Decision Fusion Accuracy</span>
+  </div>
+  <div class="about-badge-item">
+    <span class="about-badge-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 2v7.31"/>
+        <path d="M14 9.3V1.99"/>
+        <path d="M8.5 2h7"/>
+        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>
+      </svg>
+    </span>
+    <span>5 Cell-Type Classes</span>
+  </div>
+</div>
+
+<div class="dataset-section">
+  <h3>Datasets &amp; Sources</h3>
+  <ul class="dataset-list">
+    <li><strong>SIPaKMeD Cytology Dataset</strong> &mdash; 4,049 manually segmented &amp; annotated Pap smear cell images captured at the Pathology Department of Sfax, Tunisia. Contains 5 diagnostic categories: Dyskeratotic (CIN), Koilocytotic (HPV-related), Metaplastic (benign regenerative change), Parabasal (squamous), and Superficial-Intermediate (mature squamous).</li>
+    <li><strong>Image Preprocessing Pipeline</strong> &mdash; Every image is standardized through CLAHE contrast enhancement (L-channel of LAB color space, clipLimit=2.0, 8&times;8 tiles), 5&times;5 median filtering for salt-and-pepper denoising, and Otsu automatic threshold segmentation to isolate cellular material from slide background prior to feature extraction.</li>
+    <li><strong>Train / Validation / Test Split</strong> &mdash; The existing pipeline uses a 70% / 15% / 15% random split. The current per-model evaluator records its seed and sample count with each generated result; it does not claim a stratified split.</li>
+  </ul>
+</div>
+{% endblock %}

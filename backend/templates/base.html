@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CerviScan AI</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+</head>
+<body class="{{ body_class|default('dashboard-container') }}">
+  {% if body_class|default('dashboard-container') == 'dashboard-container' %}
+    <div class="header-bar">
+      <div class="header-logo-section">
+        <div class="logo-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 2v7.31"/>
+            <path d="M14 9.3V1.99"/>
+            <path d="M8.5 2h7"/>
+            <path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>
+          </svg>
+        </div>
+        <h1>CerviScan AI</h1>
+      </div>
+      <div class="header-user-section">
+        <div class="user-profile-trigger" onclick="toggleDropdown(event)">
+          <div class="avatar-circle">{{ user_initials|default('DS') }}</div>
+          <div class="user-name">{{ user_full_name|default('Dr. Sowmiya') }}</div>
+        </div>
+        <div class="user-dropdown" id="user-dropdown" style="display:none">
+          <a href="/profile" class="dropdown-item">Profile</a>
+          <a href="/settings" class="dropdown-item">Settings</a>
+          <a href="/logout" class="dropdown-item">Logout</a>
+        </div>
+      </div>
+    </div>
+    <div class="main-wrapper">
+      <div class="sidebar">
+        <a href="/dashboard" class="sidebar-nav-item{% if active_nav == 'dashboard' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </span>
+          Dashboard
+        </a>
+        <a href="/upload" class="sidebar-nav-item{% if active_nav == 'upload' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </span>
+          Upload Image
+        </a>
+        <a href="/prediction" class="sidebar-nav-item{% if active_nav == 'prediction' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </span>
+          Prediction
+        </a>
+        <a href="/history" class="sidebar-nav-item{% if active_nav == 'history' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>
+            </svg>
+          </span>
+          History
+        </a>
+        <a href="/performance" class="sidebar-nav-item{% if active_nav == 'performance' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>
+            </svg>
+          </span>
+          Model Performance
+        </a>
+        <a href="/about" class="sidebar-nav-item{% if active_nav == 'about' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </span>
+          About
+        </a>
+        <a href="/profile" class="sidebar-nav-item{% if active_nav == 'profile' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          Profile
+        </a>
+        <a href="/settings" class="sidebar-nav-item{% if active_nav == 'settings' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+            </svg>
+          </span>
+          Settings
+        </a>
+        <a href="/logout" class="sidebar-nav-item logout-item{% if active_nav == 'logout' %} active{% endif %}">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </span>
+          Logout
+        </a>
+      </div>
+      <div class="content-area animate-fade">
+        <div class="content-header">
+          <h2>
+            {% block page_title_icon %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+            {% endblock %}
+            {% block page_title %}Dashboard{% endblock %}
+          </h2>
+          <p>{% block page_subtitle %}Welcome back — here's an overview of the system.{% endblock %}</p>
+        </div>
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  {% else %}
+    {% block login_only_content %}{% endblock %}
+  {% endif %}
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

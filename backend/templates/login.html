@@ -1,0 +1,251 @@
+{% set body_class = "login-container" %}
+{% extends "base.html" %}
+
+{% block login_only_content %}
+<div class="login-card-wrapper">
+  <div class="login-left animate-slide">
+    <div class="login-left-content">
+      <h1>Cervical <span class="highlight-purple">Cancer Detection</span> Powered by Deep Learning</h1>
+      <div class="login-left-subtitle">AI-Powered Diagnostic System</div>
+      <div class="badges-row">
+        <div class="badge-item">
+          <div class="badge-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+              <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+            </svg>
+          </div>
+          <span>7 CNN Models</span>
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+            </svg>
+          </div>
+          <span>Feature Fusion: 99.21%</span>
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <span>Decision Fusion: 99.61%</span>
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
+            </svg>
+          </div>
+          <span>Real-time Predict</span>
+        </div>
+      </div>
+      <div class="illustrations-box">
+        <img src="/static/img/microscope.png" class="microscope-img" alt="Microscope">
+        <div class="cells-circle-preview">
+          <img src="/static/img/cells.png" alt="Cell Preview">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="login-right animate-fade">
+    <div class="login-right-header">
+      <div class="ribbon-icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 2v7.31"/>
+          <path d="M14 9.3V1.99"/>
+          <path d="M8.5 2h7"/>
+          <path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>
+        </svg>
+      </div>
+      <h2>Welcome Back</h2>
+      <p>Sign in to access the diagnostic dashboard</p>
+    </div>
+    {% if error %}<p style="color:#dc2626;text-align:center;font-weight:600">{{ error }}</p>{% endif %}
+    <form id="firebase-login-form" action="/auth/session" method="POST">
+      <input type="hidden" name="id_token" id="id-token">
+      <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+      <div class="form-group">
+        <div class="input-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>
+          </svg>
+        </div>
+        <input type="email" class="input-field" id="email" placeholder="Email Address" required>
+      </div>
+      <div class="form-group">
+        <div class="input-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <input type="password" class="input-field" id="password" placeholder="Password" required>
+        <div class="eye-toggle-btn" id="eyeToggle" onclick="togglePassword()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+      </div>
+      <button type="submit" class="login-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+        <span>Sign In</span>
+      </button>
+      <div style="margin-top: 1rem; text-align: center; color: var(--color-text-muted); font-size: 0.85rem; font-weight: 600;">— OR —</div>
+      <button type="button" class="google-btn" id="google-signin-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ea4335; margin-right: 0.5rem;">
+          <circle cx="12" cy="12" r="10"/><path d="M8 12h8m-4-4v8"/>
+        </svg>
+        <span>Sign In with Google</span>
+      </button>
+    </form>
+    <div class="login-footer">
+      <span id="toggle-text">Don't have an account?</span> <a href="#" id="toggle-auth-mode">Sign Up</a>
+    </div>
+  </div>
+</div>
+<style>
+.google-btn {
+  background: #fff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all .3s;
+  display: inline-flex;
+  box-shadow: 0 4px 6px -1px #00000005;
+}
+.google-btn:hover {
+  background: #f8fafc;
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px #6366f11a;
+}
+.google-btn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+</style>
+{% endblock %}
+{% block scripts %}
+{% if firebase_web_config %}
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  
+  const auth = getAuth(initializeApp({{ firebase_web_config|tojson }}));
+  let isSignUpMode = false;
+
+  const toggleBtn = document.getElementById('toggle-auth-mode');
+  const titleEl = document.querySelector('.login-right-header h2');
+  const subtitleEl = document.querySelector('.login-right-header p');
+  const submitBtnText = document.querySelector('.login-btn span');
+  const toggleTextEl = document.getElementById('toggle-text');
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    isSignUpMode = !isSignUpMode;
+    if (isSignUpMode) {
+      titleEl.textContent = 'Register Account';
+      subtitleEl.textContent = 'Create an account to access the diagnostic dashboard';
+      submitBtnText.textContent = 'Sign Up';
+      toggleTextEl.textContent = 'Already have an account?';
+      toggleBtn.textContent = 'Sign In';
+    } else {
+      titleEl.textContent = 'Welcome Back';
+      subtitleEl.textContent = 'Sign in to access the diagnostic dashboard';
+      submitBtnText.textContent = 'Sign In';
+      toggleTextEl.textContent = "Don't have an account?";
+      toggleBtn.textContent = 'Sign Up';
+    }
+  });
+
+  async function submitAuthToken(idToken) {
+    const nextUrl = new URLSearchParams(window.location.search).get('next') || '';
+    const response = await fetch('/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ 'id_token': idToken, 'next': nextUrl })
+    });
+    
+    if (response.redirected) {
+      window.location.href = response.url;
+    } else {
+      window.location.href = '/dashboard';
+    }
+  }
+
+  document.getElementById('firebase-login-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const button = form.querySelector('button[type="submit"]'); 
+    button.disabled = true;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    try {
+      let credential;
+      if (isSignUpMode) {
+        credential = await createUserWithEmailAndPassword(auth, email, password);
+        // Send Email Verification for new accounts
+        await sendEmailVerification(credential.user);
+        alert('Verification email sent! Please check your inbox and verify your email before logging in.');
+        await auth.signOut(); // Force sign-out until verified
+        button.disabled = false;
+        // Switch back to login mode
+        toggleBtn.click();
+        return;
+      } else {
+        credential = await signInWithEmailAndPassword(auth, email, password);
+        // Check if email is verified
+        if (!credential.user.emailVerified) {
+          await sendEmailVerification(credential.user);
+          alert('Please verify your email address. A new verification link has been sent to your inbox.');
+          await auth.signOut();
+          button.disabled = false;
+          return;
+        }
+      }
+      await submitAuthToken(await credential.user.getIdToken(true));
+    } catch (err) {
+      console.error("Firebase Auth Error Details:", err);
+      alert((isSignUpMode ? 'Sign-up' : 'Sign-in') + ' failed: ' + err.message);
+      document.getElementById('email').value = "JS Error: " + err.message;
+      button.disabled = false;
+    }
+  });
+
+  const googleBtn = document.getElementById('google-signin-btn');
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      googleBtn.disabled = true;
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        await submitAuthToken(await result.user.getIdToken(true));
+      } catch (err) {
+        console.error("Google Sign-In Error Details:", err);
+        if (err.code === 'auth/unauthorized-domain') {
+          alert('Google Sign-In failed because this domain is not authorized. Please add 127.0.0.1 to your Firebase Authorized Domains.');
+        } else if (err.code !== 'auth/popup-closed-by-user') {
+          alert('Google Sign-In failed: ' + err.message);
+        }
+        googleBtn.disabled = false;
+      }
+    });
+  }
+</script>
+{% else %}<p style="text-align:center;color:#64748b;font-size:.85rem">Firebase sign-in is not configured on this server.</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Signing out</title></head><body><p>Signing out…</p>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+try { await signOut(getAuth(initializeApp({{ firebase_web_config|tojson }}))); } finally { window.location.replace('/login'); }
+</script></body></html>

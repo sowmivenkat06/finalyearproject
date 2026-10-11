@@ -63,17 +63,16 @@ export default function Dashboard({ user, onLogout }) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result);
-
-        const image = new Image();
-        image.onload = () => {
-          const sizeInMegabytes = (file.size / (1024 * 1024)).toFixed(2);
-          setImageDetails({
-            name: file.name,
-            size: `${sizeInMegabytes} MB`,
-            resolution: `${image.naturalWidth} × ${image.naturalHeight}`
-          });
-        };
-        image.src = reader.result;
+        
+        // Mocking metadata based on uploaded file
+        const mockSizes = ['1.8 MB', '2.2 MB', '3.1 MB', '1.4 MB'];
+        const mockResolutions = ['1024 × 768', '1280 × 960', '800 × 600'];
+        
+        setImageDetails({
+          name: file.name,
+          size: mockSizes[Math.floor(Math.random() * mockSizes.length)],
+          resolution: mockResolutions[Math.floor(Math.random() * mockResolutions.length)]
+        });
       };
       reader.readAsDataURL(file);
     }

@@ -45,18 +45,6 @@
   font-family: var(--font-body);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 body {
   background: var(--color-bg-light);
   color: var(--color-text-main);
@@ -1628,19 +1616,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 600px) {
-  .header-bar {
-    padding: 0.7rem 1rem;
-  }
-  .header-logo-section {
-    min-width: 0;
-  }
-  .header-logo-section h1 {
-    font-size: 0.95rem;
-    line-height: 1.2;
-  }
-  .user-name {
-    display: none;
-  }
   .login-container {
     padding: 1rem;
   }
@@ -1665,19 +1640,10 @@ h1, h2, h3, h4, h5, h6 {
     overflow-x: auto;
     padding: 0.8rem;
   }
-  .sidebar-nav-item {
-    width: auto;
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
   .sidebar-nav-item.logout-item {
     margin-top: 0;
-    margin-left: auto;
     border-top: none;
     padding-top: 0.85rem;
-  }
-  .content-area {
-    padding: 1rem;
   }
 }
 

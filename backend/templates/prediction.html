@@ -1,0 +1,208 @@
+{% set active_nav = "prediction" %}
+{% set page_title = "Prediction Results" %}
+{% set page_subtitle = "Comprehensive diagnosis, per-class probabilities, model explainability, and AI-powered recommendations." %}
+{% extends "base.html" %}
+
+{% block content %}
+{% if prediction %}<script>window.serverPrediction = {{ prediction|tojson }};</script>{% endif %}
+<div class="tab-sub-nav">
+  <button class="sub-nav-btn active" data-tab="diagnostic" onclick="switchTab('diagnostic')">Diagnostic Result</button>
+  <button class="sub-nav-btn" data-tab="explainability" onclick="switchTab('explainability')">Explainability</button>
+</div>
+
+<div id="diagnostic-panel">
+  <div class="split-grid">
+    <div style="flex:1.2">
+      <div class="prediction-card-left">
+        <h3 style="font-size:1.1rem">Input Image &amp; Region of Interest</h3>
+        <div class="input-image-relative">
+          <img id="input-image" src="" alt="Uploaded Pap smear image" hidden>
+        </div>
+        <p style="color:#475569;font-size:.85rem">The exact uploaded image is processed using CLAHE contrast enhancement, 5×5 median denoising, and Otsu threshold segmentation.</p>
+      </div>
+    </div>
+    <div style="flex:.8">
+      <div class="predicted-class-card" id="predicted-card" style="min-height:100%">
+        <span class="badge-risk" id="predicted-risk">Awaiting analysis</span>
+        <div class="predicted-capsule" id="predicted-capsule">—</div>
+        <div class="disease-status" id="predicted-disease-status" style="font-size: 1.05rem; font-weight: 700; margin-top: 0.8rem; text-align: center; padding: 0.6rem; border-radius: 8px; background: #f8fafc; border: 1.5px solid #e2e8f0; color: #64748b;">—</div>
+        <div class="circular-gauge-container">
+          <div class="gauge-svg-wrapper">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle id="gauge-arc" cx="60" cy="60" r="50" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16" transform="rotate(-90 60 60)"/>
+              <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+            </svg>
+            <div class="gauge-center-text" id="gauge-text">—</div>
+          </div>
+          <div class="gauge-label">Confidence Score</div>
+        </div>
+        <div class="predicted-model-details">
+          <div class="predicted-model-row"><span class="model-label">Model Used</span><span class="model-val">Feature Fusion Classifier<span style="color:#64748b;font-weight:500">(ResNet50 + ResNet101 + ResNet152 + AlexNet + VGG16 + GoogLeNet + InceptionV3)</span></span></div>
+          <div class="predicted-model-row"><span class="model-label">Fusion Method</span><span class="model-val" id="meta-fusion">Feature-Level (17,408-dim)</span></div>
+          <div class="predicted-model-row"><span class="model-label">Processing Time</span><span class="model-val" id="meta-time">-</span></div>
+          <div class="predicted-model-row"><span class="model-label">Image Size</span><span class="model-val" id="meta-img-size">-</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="split-grid">
+    <div style="flex:1">
+      <div class="probabilities-box" id="probabilities-box">
+        <h3 style="font-size:1.1rem">Per-Class Probabilities</h3>
+        {% if not prediction %}<p style="color:#64748b">Upload and analyze an image to view its model probabilities.</p>{% endif %}
+      </div>
+    </div>
+    <div style="flex:1">
+      <div class="interpretation-card" id="interpretation-card" style="min-height:100%">
+        <h4>Clinical Interpretation</h4>
+        <p>Upload an image on the <strong>Upload Image</strong> page and click <strong>Analyze Image</strong> to view the AI's diagnostic assessment. The predicted class and confidence will be combined with a rules-based risk stratification to generate findings and recommendations in the downloadable Diagnostic Report.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-button-bar">
+    <button class="download-report-btn" id="download-report-btn" disabled onclick="openReportModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Generate Diagnostic Report</span>
+    </button>
+  </div>
+</div>
+
+<div id="explainability-panel" style="display:none">
+  <div class="stepper-container">
+    <div class="stepper-step">
+      <div class="stepper-number">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span>Original Image</span>
+    </div>
+    <div class="stepper-divider"></div>
+    <div class="stepper-step">
+      <div class="stepper-number">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span>Preprocessed</span>
+    </div>
+    <div class="stepper-divider"></div>
+    <div class="stepper-step active">
+      <div class="stepper-number">3</div>
+      <span>Feature Maps</span>
+    </div>
+    <div class="stepper-divider"></div>
+    <div class="stepper-step future">
+      <div class="stepper-number">4</div>
+      <span>Grad-CAM</span>
+    </div>
+  </div>
+
+  <div class="chart-card"><h4>Explainability artifacts</h4><p>The deployed inference pipeline does not generate per-image feature maps or Grad-CAM heatmaps. They are intentionally not shown, rather than displaying a static example unrelated to this uploaded image.</p></div>
+
+  <div class="architecture-container">
+    <div class="architecture-inner-grid">
+      <div class="architecture-cnn-stack">
+        <div class="cnn-model-box">ResNet50</div>
+        <div class="cnn-model-box">ResNet101</div>
+        <div class="cnn-model-box">ResNet152</div>
+        <div class="cnn-model-box">AlexNet</div>
+        <div class="cnn-model-box">VGG16</div>
+        <div class="cnn-model-box">GoogLeNet</div>
+        <div class="cnn-model-box">InceptionV3</div>
+      </div>
+      <div class="fusion-central-box">
+        <div class="fusion-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <h4>Feature Fusion</h4>
+        <p style="color:#2563eb;font-size:.8rem;font-weight:600">Attention + MLP (17,408-dim input)</p>
+      </div>
+      <div class="classification-output-card">
+        <h4>Output Classes</h4>
+        <div class="output-class-item">Dyskeratotic</div>
+        <div class="output-class-item">Koilocytotic</div>
+        <div class="output-class-item">Metaplastic</div>
+        <div class="output-class-item">Parabasal</div>
+        <div class="output-class-item">Superficial-Intermediate</div>
+      </div>
+    </div>
+    <svg class="arch-connector-svg">
+      <defs><linearGradient id="archGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a5b4fc"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs>
+      <line x1="33%" y1="50%" x2="50%" y2="50%" stroke="url(#archGrad)" stroke-width="2" stroke-dasharray="4 4"/>
+      <line x1="58%" y1="50%" x2="75%" y2="50%" stroke="url(#archGrad)" stroke-width="2" stroke-dasharray="4 4"/>
+    </svg>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="report-modal" style="display:none" onclick="if(event.target===this)closeReportModal()">
+  <div class="modal-scroll-container">
+    <div class="diagnostic-pdf-container">
+      <div class="pdf-header">
+        <div class="logo-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+        </div>
+        <div class="pdf-header-titles">
+          <h2>CerviScan AI</h2>
+          <p>AI-POWERED DIAGNOSTIC REPORT</p>
+        </div>
+      </div>
+      <div class="pdf-section">
+        <div class="pdf-section-title">PATIENT &amp; SAMPLE DETAILS</div>
+        <div class="pdf-details-split">
+          <div class="pdf-thumbnail">
+            <img id="report-thumbnail" src="" alt="Sample" hidden>
+          </div>
+          <div class="pdf-details-table">
+            <div class="pdf-details-row"><div class="label">Patient ID</div><div class="value" id="rp-id">—</div></div>
+            <div class="pdf-details-row"><div class="label">Sample File</div><div class="value" id="rp-file">-</div></div>
+            <div class="pdf-details-row"><div class="label">Scan Date</div><div class="value" id="rp-scan-date">-</div></div>
+            <div class="pdf-details-row"><div class="label">Report Generated</div><div class="value" id="rp-report-date">-</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="pdf-section">
+        <div class="pdf-section-title">PREDICTION SUMMARY</div>
+        <div class="pdf-prediction-table">
+          <div class="pdf-prediction-row"><div class="label">Predicted Class</div><div class="value"><span class="pdf-pill-purple" id="rp-class">—</span></div></div>
+          <div class="pdf-prediction-row"><div class="label">Confidence</div><div class="value" id="rp-confidence">—</div></div>
+          <div class="pdf-prediction-row"><div class="label">Risk Level</div><div class="value"><span id="rp-risk">—</span></div></div>
+          <div class="pdf-prediction-row"><div class="label">Fusion Model</div><div class="value" style="font-size:.85rem">7-Model Ensemble (Feature Fusion Attention)</div></div>
+          <div class="pdf-prediction-row"><div class="label">Processing Time</div><div class="value" id="rp-proc-time">-</div></div>
+        </div>
+      </div>
+      <div class="pdf-section">
+        <div class="pdf-section-title">PER-CLASS PROBABILITIES</div>
+        <div id="rp-per-class" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.5rem">
+        </div>
+      </div>
+      <div class="pdf-section" id="rp-recommendations-section" style="display:none">
+        <div class="pdf-section-title">RECOMMENDATIONS</div>
+        <ul id="rp-recommendations" class="pdf-recommendation-list">
+        </ul>
+      </div>
+      <div class="pdf-section">
+        <div class="pdf-section-title">DISCLAIMER</div>
+        <p style="color:#64748b;font-size:.85rem;line-height:1.6;font-weight:500">This report is generated by an AI-assistive tool and is NOT a substitute for professional medical diagnosis. All results must be reviewed and confirmed by a qualified pathologist.</p>
+      </div>
+      <div class="pdf-sign-area">
+        <div class="pdf-sign-line">Authorized Pathologist (Signature)</div>
+      </div>
+      <div class="pdf-footer-text">Generated by CerviScan AI · Cervical Cancer Detection System</div>
+    </div>
+    <div class="pdf-action-footer">
+      <button class="pdf-btn-secondary" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>Print Report</span>
+      </button>
+      <button class="pdf-btn-secondary" onclick="closeReportModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <span>Cancel</span>
+      </button>
+      <button class="pdf-btn-primary" id="dl-pdf-btn" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Download PDF</span>
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}

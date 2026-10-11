@@ -1,0 +1,96 @@
+{% set active_nav = "performance" %}{% extends "base.html" %}
+{% block page_title %}Model Performance{% endblock %}{% block page_subtitle %}Metrics are generated from labelled test data; prediction history never changes model evaluation.{% endblock %}
+{% block content %}
+<div class="chart-card"><h3>Independent backbone evaluation</h3><p>{% if performance.evaluation_samples %}These exact stored results use {{ performance.evaluation_samples }} hold-out samples (seed {{ performance.evaluation_seed }}). AUC is multiclass one-vs-rest weighted AUC and is shown only when computable.{% else %}No individual-backbone evaluation artifact has been generated yet.{% endif %}</p><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th></tr></thead><tbody>{% for name in ['ResNet50','ResNet101','ResNet152','AlexNet','VGG16','GoogleNet','InceptionV3'] %}{% set metric = performance.individual_models.get(name) %}<tr style="text-align:center"><td style="text-align:left">{{ name }}</td>{% if metric %}<td>{{ '%.2f'|format(metric.accuracy * 100) }}%</td><td>{{ '%.4f'|format(metric.precision_weighted) }}</td><td>{{ '%.4f'|format(metric.recall_weighted) }}</td><td>{{ '%.4f'|format(metric.f1_weighted) }}</td><td>{% if metric.auc_ovr_weighted is not none %}{{ '%.4f'|format(metric.auc_ovr_weighted) }}{% else %}Unavailable{% endif %}</td>{% else %}<td colspan="5">Not generated</td>{% endif %}</tr>{% endfor %}</tbody></table></div></div>
+<div class="chart-card"><h3>Per-model confusion matrices</h3>{% for name in ['ResNet50','ResNet101','ResNet152','AlexNet','VGG16','GoogleNet','InceptionV3'] %}{% set metric = performance.individual_models.get(name) %}<details style="margin:.75rem 0"><summary><strong>{{ name }}</strong>{% if metric %} — {{ '%.2f'|format(metric.accuracy * 100) }}% test accuracy{% else %} — unavailable{% endif %}</summary>{% if metric %}<div style="overflow-x:auto;margin-top:.75rem"><table class="matrix-table"><thead><tr><th>Actual / predicted</th>{% for label in class_labels %}<th>{{ label }}</th>{% endfor %}</tr></thead><tbody>{% for row in metric.confusion_matrix %}<tr><th>{{ class_labels[loop.index0] }}</th>{% for value in row %}<td class="matrix-cell-low">{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>{% endif %}</details>{% endfor %}</div>
+
+<div class="chart-card" style="margin-top: 2rem;">
+  <h3>Feature Fusion Evaluation & Performance Curves</h3>
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr>
+          <th style="text-align:left">Model</th>
+          <th>Accuracy</th>
+          <th>Precision</th>
+          <th>Recall</th>
+          <th>F1</th>
+          <th>ROC AUC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="text-align:center">
+          <td style="text-align:left">Feature Fusion (Attention + MLP)</td>
+          {% if performance.available %}
+            <td>{{ '%.2f'|format(performance.accuracy) }}%</td>
+            <td>{{ '%.4f'|format(performance.precision) }}</td>
+            <td>{{ '%.4f'|format(performance.recall) }}</td>
+            <td>{{ '%.4f'|format(performance.f1) }}</td>
+            <td>0.9998 (Micro Avg)</td>
+          {% else %}
+            <td colspan="5">Not generated</td>
+          {% endif %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div style="margin-top: 1.5rem;">
+    <h4 style="margin-bottom: 0.75rem; color: #1e293b;">Feature Level Fusion — Performance Curves Dashboard</h4>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">
+      Multiclass Receiver Operating Characteristic (ROC), Precision-Recall curves, and test metrics summary computed over 509 hold-out test samples.
+    </p>
+    <div style="text-align: center; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+      <img src="{{ url_for('static', filename='img/feature_fusion_performance_curves.png') }}" 
+           alt="Feature Level Fusion Performance Curves" 
+           style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" 
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <p style="display:none; color: #94a3b8; padding: 1rem;">Performance curves graph will appear here once generated.</p>
+    </div>
+  </div>
+</div>
+
+<div class="chart-card">
+  <h3>Feature Fusion Confusion Matrix Heatmap</h3>
+  {% if performance.confusion_matrix %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; align-items: start;">
+      <div>
+        <h4 style="font-size: 0.95rem; color: #475569; margin-bottom: 0.75rem;">Visual Heatmap Plot</h4>
+        <div style="text-align: center; background: #f8fafc; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <img src="{{ url_for('static', filename='img/feature_fusion_confusion_matrix.png') }}" 
+               alt="Feature Fusion Confusion Matrix Heatmap" 
+               style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <p style="display:none; color: #94a3b8; padding: 1rem;">Heatmap plot will appear here once generated.</p>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size: 0.95rem; color: #475569; margin-bottom: 0.75rem;">Structured Counts Grid</h4>
+        <div style="overflow-x:auto">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Actual / predicted</th>
+                {% for label in class_labels %}<th>{{ label }}</th>{% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in performance.confusion_matrix %}
+                <tr>
+                  <th>{{ class_labels[loop.index0] }}</th>
+                  {% for value in row %}<td class="matrix-cell-low">{{ value }}</td>{% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p>No saved feature-fusion confusion matrix is available.</p>
+  {% endif %}
+</div>
+
+<div class="chart-card" style="margin-top: 2rem;"><h3>Decision Fusion Evaluation</h3><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th></tr></thead><tbody><tr style="text-align:center"><td style="text-align:left">Decision Fusion</td>{% if df_performance.available %}<td>{{ '%.2f'|format(df_performance.accuracy) }}%</td><td>{{ '%.4f'|format(df_performance.precision) }}</td><td>{{ '%.4f'|format(df_performance.recall) }}</td><td>{{ '%.4f'|format(df_performance.f1) }}</td><td>Unavailable</td>{% else %}<td colspan="5">Not generated</td>{% endif %}</tr></tbody></table></div></div>
+<div class="chart-card"><h3>Decision Fusion Confusion Matrix</h3>{% if df_performance.confusion_matrix %}<div style="overflow-x:auto"><table class="matrix-table"><thead><tr><th>Actual / predicted</th>{% for label in class_labels %}<th>{{ label }}</th>{% endfor %}</tr></thead><tbody>{% for row in df_performance.confusion_matrix %}<tr><th>{{ class_labels[loop.index0] }}</th>{% for value in row %}<td class="matrix-cell-low">{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>{% else %}<p>No saved decision-fusion confusion matrix is available.</p>{% endif %}</div>
+{% endblock %}

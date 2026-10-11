@@ -97,10 +97,7 @@ export default function Login({ onLoginSuccess }) {
 
           <form onSubmit={handleSubmit}>
             {error && (
-              <div
-                role="alert"
-                style={{ color: 'var(--color-danger)', fontSize: '0.9rem', marginBottom: '1rem', textAlign: 'center' }}
-              >
+              <div style={{ color: 'var(--color-danger)', fontSize: '0.9rem', marginBottom: '1rem', textAlign: 'center' }}>
                 {error}
               </div>
             )}
@@ -109,15 +106,12 @@ export default function Login({ onLoginSuccess }) {
               <div className="input-icon-wrapper">
                 <Mail size={18} />
               </div>
-              <label className="sr-only" htmlFor="login-email">Email address</label>
               <input
-                id="login-email"
                 type="email"
                 placeholder="Email address"
                 className="input-field"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
                 required
               />
             </div>
@@ -126,23 +120,18 @@ export default function Login({ onLoginSuccess }) {
               <div className="input-icon-wrapper">
                 <Lock size={18} />
               </div>
-              <label className="sr-only" htmlFor="login-password">Password</label>
               <input
-                id="login-password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="input-field"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
                 required
               />
               <button
                 type="button"
                 className="eye-toggle-btn"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                aria-pressed={showPassword}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
