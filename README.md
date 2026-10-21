@@ -1,6 +1,5 @@
 # A fusion-based deep learning framework for enhanced cervical cancer detection and classification
 
-# Cervical Cancer Detection and Classification Using Hybrid Deep Learning and Fusion
 
 ## Abstract
 
